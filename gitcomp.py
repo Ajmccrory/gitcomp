@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
 from scrapers import git_scraper
 
-def main():
+if __name__ == '__main__':
+    
     cnt = 1
     scraper = git_scraper.GithubScraper()
     while cnt == 1:
@@ -14,7 +16,3 @@ def main():
         cnt = input('Would you like to compare more users? 1-yes 0-No')
         if cnt == 0:
             scraper.close()
-
-
-if __name__ == "__main__":
-    main()

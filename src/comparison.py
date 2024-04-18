@@ -1,8 +1,14 @@
-"""
-Comparison algorithm that compares user data and returns who has more contributions.
-"""
+
 
 def compare(username1, username2, user1_data, user2_data):
+    """
+    function to compare the two users and the data given, these variables pull from the db not the cached data.
+    :param username1: first username (local store)
+    :param username2: second username (local store)
+    :param user1_data: user 1 data obj (mongo)
+    :param user2_data: user 2 data obj (mongo)
+    :return:
+    """
     if not user1_data:
         print(f"Data for user '{username1}' not found in the database.")
         return

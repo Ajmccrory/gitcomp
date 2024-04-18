@@ -7,11 +7,23 @@ from data import mongo_ops
 
 
 class GithubScraper:
+    """
+    create scraper object
+    :param:
+    :return: comparison of 2 users
+    :return: a dictonary into a mongodb server
+    """
     def __init__(self):
         self.cached_users = []
         self.mongo = mongo_ops.MongoOperations()
         
     def scrape_user_data(self, username):
+        """
+        scraper functions
+        :param username: username input by user
+        :return: dictionary to mongodb server
+        :return: username into a local list
+        """
         if username in self.cached_users:
             print(f"Data for user '{username}' already cached.")
             return
@@ -28,6 +40,7 @@ class GithubScraper:
                     contributions_text = contributions.get_text(strip=True)
                     cont_num = contributions_text.split()[0]
                     cont = int(cont_num)
+                    print(cont)
                     if cont_num:
                         data = {'username': username, 'contributions_last_year': cont}
                         self.mongo.insert_one(data)
@@ -46,10 +59,19 @@ class GithubScraper:
 
 
     def compare_users_contributions(self, username1, username2):
+        """
+        call compare function to compare 2 users
+        :param username1: first username
+        :param username2: second username
+        :return str: dictating which user had more contributions in the last year
+        """
         user1_data = self.mongo.find_one({'username': username1})
         user2_data = self.mongo.find_one({'username': username2})
         return comparison.compare(username1, username2, user1_data, user2_data)
     
     def close(self):
+        """
+        close the mongo db server.
+        """
         self.mongo.close()
 
