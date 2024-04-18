@@ -1,5 +1,4 @@
 
-
 def compare(username1, username2, user1_data, user2_data):
     """
     function to compare the two users and the data given, these variables pull from the db not the cached data.
