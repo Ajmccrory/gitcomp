@@ -7,19 +7,20 @@ from data import mongo_ops
 
 
 class GithubScraper:
-    """
-    create scraper object
-    :param:
-    :return: comparison of 2 users
-    :return: a dictonary into a mongodb server
-    """
+
     def __init__(self):
+        """
+        create scraper object
+        :param:
+        :return: comparison of 2 users
+        :return: a dictonary into a mongodb server
+        """
         self.cached_users = []
         self.mongo = mongo_ops.MongoOperations()
         
     def scrape_user_data(self, username):
         """
-        scraper functions
+        scraper function to obtain github user data without API restrictions
         :param username: username input by user
         :return: dictionary to mongodb server
         :return: username into a local list
@@ -39,9 +40,18 @@ class GithubScraper:
                     contributions = soup.find('h2', class_='f4 text-normal mb-2')
                     contributions_text = contributions.get_text(strip=True)
                     cont_num = contributions_text.split()[0]
-                    cont = int(cont_num)
+                    cont = cont_num
                     print(cont)
-                    if cont_num:
+                    print(type(cont))
+                    if len(cont) > 3:
+                        #this is purely to fix the issue of strings with commas in them.
+                        cont_commas = cont.replace(',', '')
+                        data = {'username': username, 'contributions_last_year': cont_commas}
+                        self.mongo.insert_one(data)
+                        self.cached_users.append(username)
+                        print(f'data for user {username} stored.')
+                        break
+                    elif cont:
                         data = {'username': username, 'contributions_last_year': cont}
                         self.mongo.insert_one(data)
                         self.cached_users.append(username)
