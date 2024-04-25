@@ -12,8 +12,8 @@ class GithubScraper:
         """
         create scraper object
         :param:
-        :return: comparison of 2 users
-        :return: a dictonary into a mongodb server
+        :return: comparison of 2 users (str)
+        :return: a dictonary into a mongodb server (dict)
         """
         self.cached_users = []
         self.mongo = mongo_ops.MongoOperations()
@@ -21,9 +21,8 @@ class GithubScraper:
     def scrape_user_data(self, username):
         """
         scraper function to obtain github user data without API restrictions
-        :param username: username input by user
-        :return: dictionary to mongodb server
-        :return: username into a local list
+        :param username: username input by user (str)
+        :return: collection to mongodb server (dict)
         """
         if username in self.cached_users:
             print(f"Data for user '{username}' already cached.")
@@ -69,14 +68,44 @@ class GithubScraper:
     def compare_users_contributions(self, username1, username2):
         """
         call compare function to compare 2 users
-        :param username1: first username
-        :param username2: second username
+        :param username1: first username (str)
+        :param username2: second username (str)
         :return str: dictating which user had more contributions in the last year
         """
         user1_data = self.mongo.find_one({'username': username1})
         user2_data = self.mongo.find_one({'username': username2})
         return comparison.compare(username1, username2, user1_data, user2_data)
     
+    def get_repos(self, username):
+         """
+         get the repos of specific users using scraper
+         :param username: username (str)
+         :return (dict): all of the users repos
+         """
+         url = f'https://github.com/{username}?tab=repositories'
+         retries = 3
+         for attempt in range(retries):
+            try:
+                response = requests.get(url)
+                if response.status_code == 200:
+                    soup = BeautifulSoup(response.text, 'html.parser')
+                    repo_list = soup.find_all('h3', class_='wb-break-all')
+                    if repo_list:
+                        repositories = [repo.text.strip() for repo in repo_list]
+
+                        for repo_name in repositories:
+                            self.mongo.repo_collection.insert_one({'username': username, 'repository': repo_name})
+                        return repositories
+                    else:
+                        print(f'no repositories found for {username}')
+                else:
+                    print(f"Failed to fetch data for user '{username}'. Status code: {response.status_code}")
+            except Timeout:
+                print(f'Timeout has occured while fetching data for user {username}')
+            except Exception as e:
+                print(f"Error scraping data for user '{username}': {e}")
+
+
     def close(self):
         """
         close the mongo db server.

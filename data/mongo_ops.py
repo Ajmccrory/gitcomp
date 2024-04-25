@@ -15,11 +15,12 @@ class MongoOperations:
         self.client = MongoClient(URI)  # MongoDB connection
         self.db = self.client['git_data']  # MongoDB database
         self.collection = self.db['user_contributions']  # MongoDB collection
+        self.repo_collection = self.db['user_repos']
 
     def insert_one(self, data):
         """
         insert data in db
-        :param data: data object containing username and contributions
+        :param data: data object containing username and contributions (any)
         :return:
         """
         self.collection.insert_one(data)
@@ -27,8 +28,8 @@ class MongoOperations:
     def find_one(self, query):
         """
         pull specific data from db collection
-        :param query: username given to find
-        :return obj: data object stored in db
+        :param query: username given to find (dict)
+        :return (MongoOperations): data object stored in db
         """
         return self.collection.find_one(query)
     
