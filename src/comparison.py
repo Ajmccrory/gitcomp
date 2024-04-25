@@ -1,4 +1,5 @@
 
+
 class Comparison:
     """
     class for comparing things.

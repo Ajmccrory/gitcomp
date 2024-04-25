@@ -21,6 +21,8 @@ if __name__ == '__main__':
             username = input("Enter the users repos you'd like to scrape: ")
             repos = scraper.get_repos(username)
             print(repos)
+            print('\nThe maximum amount of repos scrapable is 30.\n')
+            print(f'{username} has {len(repos)} repos within the scrapable amount.')
             cnt = int(input('1- Compare\n2- scrape user repos\n3- check for user info]\n4- clear collection\n5- close\n '))
 
         elif cnt == 3:
