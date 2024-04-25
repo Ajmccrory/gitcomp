@@ -41,21 +41,19 @@ class GithubScraper:
                     contributions_text = contributions.get_text(strip=True)
                     cont_num = contributions_text.split()[0]
                     cont = cont_num
-                    print(cont)
-                    print(type(cont))
-                    if len(cont) > 3:
+                    if len(cont) > 4:
                         #this is purely to fix the issue of strings with commas in them.
                         cont_commas = cont.replace(',', '')
                         data = {'username': username, 'contributions_last_year': cont_commas}
                         self.mongo.insert_one(data)
                         self.cached_users.append(username)
-                        print(f'data for user {username} stored.')
+                        print(f'data for user {username} stored.\n')
                         break
                     elif cont:
                         data = {'username': username, 'contributions_last_year': cont}
                         self.mongo.insert_one(data)
                         self.cached_users.append(username)
-                        print(f'data for user {username} stored.')
+                        print(f'data for user {username} stored.\n')
                         break
                     else:
                         print(f"No contributions data found for user '{username}'.")

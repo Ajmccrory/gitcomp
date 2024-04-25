@@ -34,3 +34,10 @@ class MongoOperations:
     
     def close(self):
         self.client.close()
+
+    def clear_collection(self):
+        """
+        delete all documents in the collection
+        """
+        cleared = self.collection.delete_many({})
+        return cleared.deleted_count
