@@ -19,9 +19,13 @@ def compare(username1, username2, user1_data, user2_data):
     contributions_user2 = int(user2_data['contributions_last_year'])
 
     if contributions_user1 > contributions_user2:
-        print(f"{username1} has more contributions in the last year.\n")
+        diff = contributions_user1 - contributions_user2
+        print(f"{username1} has {diff} more contributions than {username2} in the last year.\n")
+        print(f'{user1_data}')
     elif contributions_user2 > contributions_user1:
-        print(f"{username2} has more contributions in the last year.\n")
+        diff = contributions_user2 - contributions_user1
+        print(f"{username2} has {diff} more contributions than {username1} in the last year.\n")
+        print(f'{user2_data}')
     else:
         print(f"{username1} and {username2} have an equal number of contributions in the last year.\n")
 
