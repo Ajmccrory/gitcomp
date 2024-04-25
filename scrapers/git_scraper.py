@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from src import comparison
 from data import mongo_ops
+from src import comparison
 
 
 class GithubScraper:
@@ -72,9 +73,10 @@ class GithubScraper:
         :param username2: second username (str)
         :return str: dictating which user had more contributions in the last year
         """
+        comp = comparison.Comparison()
         user1_data = self.mongo.find_one({'username': username1})
         user2_data = self.mongo.find_one({'username': username2})
-        return comparison.compare(username1, username2, user1_data, user2_data)
+        return comp.compare_users(username1, username2, user1_data, user2_data)
     
     def get_repos(self, username):
          """
