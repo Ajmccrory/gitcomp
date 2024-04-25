@@ -9,8 +9,8 @@ Gitcomp is a Python program that takes user input while connected to a MongoDB s
 - [Contributing](#contributing)
 
 ## Installation
+### necessary packages
 
-Provide steps or commands to install or set up the project. For example:
 
 ```bash
 git clone https://github.com/username/repository.git
