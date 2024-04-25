@@ -1,8 +1,6 @@
 # gitcomp
 
 Gitcomp is a Python program that takes user input while connected to a MongoDB server to scrape and store data from GitHub pages for comparison. The goal was to make this app scalable so that more functionalities could easily be added to it. This tool uses the Beautifulsoup package to scrape the repository names and contributions in the last year.
-- [Installation](#installation)
-- [Usage](#operation)
 - [Contributing](#contributing)
 
 
