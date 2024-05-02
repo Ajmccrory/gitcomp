@@ -20,7 +20,7 @@ class MongoOperations:
     def insert_one(self, data):
         """
         insert data in db
-        :param data: data object containing username and contributions (any)
+        :param data: data object containing username and contributions (list))
         :return:
         """
         self.collection.insert_one(data)

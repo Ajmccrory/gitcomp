@@ -64,8 +64,6 @@ class GithubScraper:
             except Exception as e:
                 print(f"Error scraping data for user '{username}': {e}")
 
-
-
     def compare_users_contributions(self, username1, username2):
         """
         call compare function to compare 2 users
@@ -108,7 +106,6 @@ class GithubScraper:
                 print(f'Timeout has occured while fetching data for user {username}')
             except Exception as e:
                 print(f"Error scraping data for user '{username}': {e}")
-
 
     def close(self):
         """

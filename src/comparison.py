@@ -1,5 +1,4 @@
 
-
 class Comparison:
     """
     class for comparing things.
@@ -19,10 +18,6 @@ class Comparison:
     def compare_users(self):
         """
         function to compare the two users and the data given, these variables pull from the db not the cached data.
-        :param username1: first username (str)
-        :param username2: second username (str)
-        :param user1_data: user 1 data obj (mongo)
-        :param user2_data: user 2 data obj (mongo)
         :return:
         """
         if not self.data1:
