@@ -1,3 +1,5 @@
+import matplotlib as plt
+
 
 class Comparison:
     """
@@ -29,15 +31,4 @@ class Comparison:
 
         contributions_user1 = int(self.data1['contributions_last_year'])
         contributions_user2 = int(self.data2['contributions_last_year'])
-
-        if contributions_user1 > contributions_user2:
-            diff = contributions_user1 - contributions_user2
-            print(f"{self.user1} has {diff} more contributions than {self.user2} in the last year.\n")
-            print(f'{self.data1}')
-        elif contributions_user2 > contributions_user1:
-            diff = contributions_user2 - contributions_user1
-            print(f"{self.user2} has {diff} more contributions than {self.user1} in the last year.\n")
-            print(f'{self.data2}')
-        else:
-            print(f"{self.user1} and {self.user2} have an equal number of contributions in the last year.\n")
-
+        
