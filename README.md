@@ -16,7 +16,7 @@ mognod -version
 ```bash
 git clone https://github.com/Ajmccrory/gitcomp.git
 cd gitcomp
-pip3 install requirements.txt
+pip3 install -r requirements.txt
 ```
 
 
