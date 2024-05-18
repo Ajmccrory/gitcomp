@@ -1,6 +1,3 @@
-import matplotlib as plt
-
-
 class Comparison:
     """
     class for comparing things.
@@ -31,4 +28,6 @@ class Comparison:
 
         contributions_user1 = int(self.data1['contributions_last_year'])
         contributions_user2 = int(self.data2['contributions_last_year'])
+        scraped_data = [contributions_user1, contributions_user2]
+        return scraped_data
         
