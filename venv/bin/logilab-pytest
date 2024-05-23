@@ -1,0 +1,7 @@
+#!/home/aj/Desktop/coding/python/gitcomp/venv/bin/python
+
+import warnings
+warnings.simplefilter('default', DeprecationWarning)
+
+from logilab.common.pytest import run
+run()

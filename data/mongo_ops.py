@@ -1,44 +1,60 @@
 from pymongo import MongoClient
 
 URI = 'mongodb://localhost:27017'
+
+
 class MongoOperations:
     """
-    create monogdb object
-    :param:
-    :return:
+    MongoDB operations for the GitHub data.
+
+    Attributes:
+        client (MongoClient): The MongoDB client.
+        db (Database): The MongoDB database.
+        collection (Collection): The MongoDB collection for user contributions.
+        repo_collection (Collection): The MongoDB collection for user repositories.
     """
 
     def __init__(self):
         """
-        create mongodb object
+        Initializes the MongoDB connection and collections.
         """
-        self.client = MongoClient(URI)  # MongoDB connection
-        self.db = self.client['git_data']  # MongoDB database
-        self.collection = self.db['user_contributions']  # MongoDB collection
+        self.client = MongoClient(URI)
+        self.db = self.client['git_data']
+        self.collection = self.db['user_contributions']
         self.repo_collection = self.db['user_repos']
 
     def insert_one(self, data):
         """
-        insert data in db
-        :param data: data object containing username and contributions (list))
-        :return:
+        Inserts a single document into the user contributions collection.
+
+        Args:
+            data (dict): The data to insert, typically containing username and contributions.
         """
         self.collection.insert_one(data)
 
     def find_one(self, query):
         """
-        pull specific data from db collection
-        :param query: username given to find (dict)
-        :return (MongoOperations): data object stored in db
+        Finds a single document in the user contributions collection.
+
+        Args:
+            query (dict): The query to match, typically containing the username.
+
+        Returns:
+            dict: The document found, or None if no document matches the query.
         """
         return self.collection.find_one(query)
-    
-    def close(self):
-        self.client.close()
 
-    def clear_collection(self):
+    def clear_collection(self, username):
         """
-        delete all documents in the collection
+        Deletes all documents for a specific username in the user contributions collection.
+
+        Args:
+            username (str): The username whose documents should be deleted.
         """
-        cleared = self.collection.delete_many({})
-        return cleared.deleted_count
+        self.collection.delete_one({'git_data': username})
+
+    def close(self):
+        """
+        Closes the MongoDB connection.
+        """
+        self.client.close()
