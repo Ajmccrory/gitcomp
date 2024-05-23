@@ -1,8 +1,5 @@
 from pymongo import MongoClient
 
-URI = 'mongodb://localhost:27017'
-
-
 class MongoOperations:
     """
     MongoDB operations for the GitHub data.
@@ -51,7 +48,7 @@ class MongoOperations:
         Args:
             username (str): The username whose documents should be deleted.
         """
-        self.collection.delete_one({'git_data': username})
+        self.collection.delete_many({'git_data': username})
 
     def close(self):
         """
