@@ -1,7 +1,7 @@
 import requests
 from requests.exceptions import Timeout
 from bs4 import BeautifulSoup
-from datetime import datetime
+
 from src import comparison
 from data import mongo_ops
 from src import comparison

@@ -12,8 +12,11 @@ COPY requirements.txt .
 # Upgrade pip to the latest version
 RUN pip3 install --no-cache-dir --upgrade pip
 
-# Install the Python dependencies
-RUN pip3 install --no-cache-dir -r requirements.txt
+# Create and activate a virtual environment
+RUN python3 -m venv venv
+
+# Install the Python dependencies in the virtual environment
+RUN /bin/bash -c "source venv/bin/activate && pip install --no-cache-dir -r requirements.txt"
 
 COPY . .
 
@@ -22,4 +25,5 @@ ENV FLASK_RUN_HOST=0.0.0.0
 
 EXPOSE 5000
 
-CMD ["flask", "run"]
+CMD ["/bin/bash", "-c", "source venv/bin/activate && flask run"]
+

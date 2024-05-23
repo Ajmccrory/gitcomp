@@ -12,7 +12,7 @@ services:
       - mongo
     volumes:
       - .:/gitcomp
-    command: flask run
+    command: ["/bin/bash", "-c", "source venv/bin/activate && flask run"]
       
   mongo:
     image: mongo:latest
