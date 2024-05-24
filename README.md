@@ -13,6 +13,8 @@ This was originally an open ended class project. After completing the class I de
 
 1. [How to Use](#how-to-use)
 2. [Setup for Devs](#setup-instructions-for-developers)
+3. [Development Information](#development-information)
+4. [Contribute to Gitcomp](#contribute)
 
 
 ## How to Use
