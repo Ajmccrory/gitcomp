@@ -2,30 +2,38 @@ import requests
 from requests.exceptions import Timeout
 from bs4 import BeautifulSoup
 import logging
-from data import mongo_ops
-from src import comparison
-
+from data.mongo_ops import MongoOperations
+from src.comparison import Comparison
 
 class GithubScraper:
+    """
+    Class for scraping GitHub data and performing comparisons.
+
+    Attributes:
+        mongo (MongoOperations): Instance of MongoDB operations.
+        logger (Logger): Logger instance for logging messages.
+    """
+
     def __init__(self):
-        self.cached_users = []
-        self.mongo = mongo_ops.MongoOperations()
+        """
+        Initialize GithubScraper class with MongoDB operations and logger.
+        """
+        self.mongo = MongoOperations()
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
     def scrape_user_data(self, username):
         """
-        Scrapes contribution data for a given GitHub username and stores it in MongoDB.
+        Scrape contribution data for a given GitHub username and store it in MongoDB.
 
         Args:
             username (str): GitHub username.
 
         Raises:
-            ValueError: If contributions data is not found for the user.
+            ValueError: If username is empty or data retrieval fails.
         """
-        if username in self.cached_users:
-            self.logger.info(f"Data for user '{username}' already cached.")
-            return
+        if not username:
+            raise ValueError("Username cannot be empty.")
 
         url = f'https://github.com/users/{username}/contributions'
         retries = 3
@@ -42,14 +50,11 @@ class GithubScraper:
                         cont = cont_num.replace(',', '') if len(cont_num) > 4 else cont_num
                         data = {'username': username, 'contributions_last_year': int(cont)}
                         self.mongo.insert_one(data)
-                        self.cached_users.append(username)
-                        self.logger.info(f'Data for user {username} stored.')
                         break
                     else:
                         self.logger.warning(f"No contributions data found for user '{username}'.")
                 else:
-                    self.logger.error(
-                        f"Failed to fetch data for user '{username}'. Status code: {response.status_code}")
+                    self.logger.error(f"Failed to fetch data for user '{username}'. Status code: {response.status_code}")
             except Timeout:
                 self.logger.error(f'Timeout has occurred while fetching data for user {username}')
             except Exception as e:
@@ -59,7 +64,7 @@ class GithubScraper:
 
     def compare_users_contributions(self, usernames):
         """
-        Compares contributions of multiple users.
+        Compare contributions of multiple users.
 
         Args:
             usernames (list): List of GitHub usernames.
@@ -68,7 +73,7 @@ class GithubScraper:
             list: Contributions of the users.
 
         Raises:
-            ValueError: If an insufficient number of usernames is provided or data is missing.
+            ValueError: If insufficient usernames provided or data is missing.
         """
         if len(usernames) < 2 or len(usernames) > 4:
             raise ValueError("You must compare at least 2 and at most 4 users.")
@@ -78,12 +83,12 @@ class GithubScraper:
             missing_users = [usernames[i] for i, data in enumerate(user_data) if data is None]
             raise ValueError(f"No data found for users: {', '.join(missing_users)}")
 
-        comp = comparison.Comparison(usernames, user_data)
+        comp = Comparison(usernames, user_data)
         return comp.compare_users()
 
     def get_repos(self, username):
         """
-        Fetches and stores repositories of a given GitHub user.
+        Fetch and store repositories of a given GitHub user.
 
         Args:
             username (str): GitHub username.
@@ -92,8 +97,11 @@ class GithubScraper:
             list: List of repository names.
 
         Raises:
-            ValueError: If no repositories are found for the user.
+            ValueError: If username is empty or no repositories are found.
         """
+        if not username:
+            raise ValueError("Username cannot be empty.")
+
         url = f'https://github.com/{username}?tab=repositories'
         retries = 3
 
@@ -112,8 +120,7 @@ class GithubScraper:
                         self.logger.warning(f'No repositories found for {username}')
                         raise ValueError(f"No repositories found for user '{username}'.")
                 else:
-                    self.logger.error(
-                        f"Failed to fetch data for user '{username}'. Status code: {response.status_code}")
+                    self.logger.error(f"Failed to fetch data for user '{username}'. Status code: {response.status_code}")
             except Timeout:
                 self.logger.error(f'Timeout has occurred while fetching data for user {username}')
             except Exception as e:
@@ -122,5 +129,7 @@ class GithubScraper:
                     raise
 
     def close(self):
-        """Closes the MongoDB connection."""
+        """
+        Close MongoDB connection.
+        """
         self.mongo.close()

@@ -1,6 +1,9 @@
 from pymongo import MongoClient
+import gridfs
+from bson import ObjectId
 
 URI = 'mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.2.3'
+
 
 class MongoOperations:
     """
@@ -11,6 +14,7 @@ class MongoOperations:
         db (Database): The MongoDB database.
         collection (Collection): The MongoDB collection for user contributions.
         repo_collection (Collection): The MongoDB collection for user repositories.
+        fs (GridFS): The GridFS instance for handling file storage.
     """
 
     def __init__(self):
@@ -21,39 +25,54 @@ class MongoOperations:
         self.db = self.client['git_data']
         self.collection = self.db['user_contributions']
         self.repo_collection = self.db['user_repos']
+        self.fs = gridfs.GridFS(self.db)
 
     def insert_one(self, data):
         """
-        Inserts a single document into the user contributions collection.
+        Inserts a document into the user contributions collection.
 
-        Args:
-            data (dict): The data to insert, typically containing username and contributions.
+        :param data: The data object containing username and contributions.
         """
         self.collection.insert_one(data)
 
     def find_one(self, query):
         """
-        Finds a single document in the user contributions collection.
+        Finds a document in the user contributions collection.
 
-        Args:
-            query (dict): The query to match, typically containing the username.
-
-        Returns:
-            dict: The document found, or None if no document matches the query.
+        :param query: The query to match.
+        :return: The document found, or None if no document matches.
         """
         return self.collection.find_one(query)
 
-    def clear_collection(self, username):
+    def save_image(self, image_data, filename):
         """
-        Deletes all documents for a specific username in the user contributions collection.
+        Saves an image to the database using GridFS.
 
-        Args:
-            username (str): The username whose documents should be deleted.
+        :param image_data: The image data to save.
+        :return: The ID of the saved image.
         """
-        self.collection.delete_many({'username': username})
+        return self.fs.put(image_data, filename=filename)
+
+    def get_image(self, file_id):
+        """
+        Retrieves an image from the database using GridFS.
+
+        :param file_id: The ID of the file to retrieve.
+        :return: The image data.
+        """
+        file_doc = self.fs.find_one({'_id': ObjectId(file_id)})
+        return file_doc
 
     def close(self):
         """
-        Closes the MongoDB connection.
+        Closes the MongoDB client connection.
         """
         self.client.close()
+
+    def clear_collection(self, username):
+        """
+        Deletes all documents in the collection for a specific user.
+
+        :param username: The username to clear.
+        """
+        self.collection.delete_many({'username': username})
