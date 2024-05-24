@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/aj/Desktop/coding/python/gitcomp/venv"
+set -gx VIRTUAL_ENV "/home/aj/Desktop/coding/python/gitcomp-v-1-0-3/gitcomp/venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

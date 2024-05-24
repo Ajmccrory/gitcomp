@@ -1,5 +1,8 @@
 # Ignore virtual environment directory
+__pycache__/
+build /
 venv/
+.env
 
 # Ignore README file
 README.md
