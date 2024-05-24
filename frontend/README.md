@@ -1,6 +1,6 @@
 ## Gitcomp Frontend
 
-The Gitcomp Frontend is built using React and Context API, providing a user-friendly interface for interacting with the Gitcomp Backend APIs. It allows users to perform various actions such as scraping GitHub user data, checking data, clearing user data, comparing contributions, repositories, and generating user activity graphs.
+The Gitcomp Frontend is built using React and Context API, providing a user-friendly interface for interacting with the Gitcomp Backend APIs. It allows users to perform various actions such as scraping GitHub user data, checking data, clearing user data, comparing contributions, and repositories, and generating user activity graphs.
 
 ## Functionality
 
@@ -28,8 +28,8 @@ The Gitcomp Frontend is built using React and Context API, providing a user-frie
     ```bash
     npm install
     ```
-3. Configure Enviornment Variables
-* Ensure the backend API endpoitn is correctly set in `src/config.js`
+3. Configure Environment Variables
+* Ensure the backend API endpoint is correctly set in `src/config.js`
 * For more on setup navigate to [setup for developers](../README.md#setup-instructions-for-developers-setup-instructions)
 4. Run the Application Locally
     ```bash
