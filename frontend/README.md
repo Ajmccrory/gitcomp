@@ -1,4 +1,4 @@
-## Overview
+## Gitcomp Frontend
 
 The Gitcomp Frontend is built using React and Context API, providing a user-friendly interface for interacting with the Gitcomp Backend APIs. It allows users to perform various actions such as scraping GitHub user data, checking data, clearing user data, comparing contributions, repositories, and generating user activity graphs.
 
