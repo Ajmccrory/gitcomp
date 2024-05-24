@@ -91,8 +91,8 @@ npm start
 * Containerization: Docker, Docker Compose
 * CI/CD: Github Actions
 * Deployment: AWS(EC2, S3, CloudFront)
-* Frontend: More info on FrontEnd at [FE README](../frontend/READNE.md)
-* Backend: More info on BackEnd at [BE README](../backend/README.md)
+* Frontend: More info on FrontEnd at [FE README](/frontend/READNE.md)
+* Backend: More info on BackEnd at [BE README](/backend/README.md)
 
 ### Development Enviornment
 * Ensure Python 3.x and Node.js are installed.
