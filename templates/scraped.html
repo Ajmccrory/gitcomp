@@ -1,69 +1,37 @@
 <!DOCTYPE html>
+<!-- scraped.html -->
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scraped User Data</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <style>
-        body {
-            padding-top: 60px;
-            font-family: Arial, sans-serif;
-            color: #333; /* Dark text color */
-        }
-
-        .container {
-            max-width: 800px;
-            margin: auto;
-        }
-
-        .repo-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            padding: 0;
-            margin-top: 20px;
-            list-style-type: none;
-        }
-
-        .repo-list li {
-            width: calc(33.33% - 10px); /* Three items per row with gaps */
-            margin-bottom: 20px;
-            background-color: #f0f0f0;
-            border: 1px solid #ddd;
-            padding: 10px;
-            box-sizing: border-box;
-            font-size: 16px; /* Base font size */
-            line-height: 1.5; /* Line height for better readability */
-            color: #555; /* Darker text color */
-        }
-
-        h1, h4 {
-            color: #007bff; /* Blue color for headings */
-        }
-    </style>
+    <link href="{{ url_for('static', filename='vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/sb-admin-2.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-        <a class="navbar-brand" href="#">Gitcomp.py</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/existing">Check Existing User</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/clear">Clear Mongo Collection</a>
-                </li>
-            </ul>
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Gitcomp.py</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/existing">Check Existing User</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/clear">Clear Mongo Collection</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
@@ -78,15 +46,10 @@
         </ul>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/sb-admin-2.min.js') }}"></script>
 </body>
 
 </html>

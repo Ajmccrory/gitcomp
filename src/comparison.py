@@ -2,12 +2,19 @@ class Comparison:
     """
     Class for comparing user contributions data.
 
-    Args:
+    Attributes:
         usernames (list): List of usernames to compare.
         user_data (list): List of data dictionaries corresponding to each username.
     """
 
     def __init__(self, usernames, user_data):
+        """
+        Initialize Comparison class with usernames and corresponding data.
+
+        Args:
+            usernames (list): List of usernames to compare.
+            user_data (list): List of data dictionaries corresponding to each username.
+        """
         if not isinstance(usernames, list) or not isinstance(user_data, list):
             raise TypeError("Both usernames and user_data should be lists.")
         if len(usernames) != len(user_data):
@@ -25,14 +32,13 @@ class Comparison:
         Raises:
             ValueError: If contributions data is not found for any user.
         """
+        if not self.user_data:
+            raise ValueError("No user data provided.")
+
         contributions = []
-
-        for username, data in zip(self.usernames, self.user_data):
-            if not data:
-                raise ValueError(f"Data for user '{username}' not found in the database.")
-            if 'contributions_last_year' not in data:
-                raise ValueError(f"Contributions data for user '{username}' is missing 'contributions_last_year'.")
-
-            contributions.append(int(data.get('contributions_last_year', 0)))
+        for data in self.user_data:
+            if not data or 'contributions_last_year' not in data:
+                raise ValueError("Invalid user data format.")
+            contributions.append(int(data['contributions_last_year']))
 
         return contributions
