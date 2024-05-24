@@ -30,7 +30,7 @@ jobs:
       run: |
         python -m venv venv
         . venv/bin/activate
-        pip install -r backend/requirements.txt
+        pip install -r backend/requirements.txt --upgrade pip
       working-directory: ./backend
 
     - name: Run tests
@@ -60,7 +60,7 @@ jobs:
       run: |
         python -m venv venv
         . venv/bin/activate
-        pip install -r backend/requirements.txt
+        pip install -r backend/requirements.txt --upgrade pip
       working-directory: ./backend
 
     - name: Build Docker image
