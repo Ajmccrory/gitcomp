@@ -4,6 +4,8 @@ WORKDIR /gitcomp-backend
 
 COPY . /gitcomp-backend
 
+RUN pip3 install --no-cache-dir --upgrade pip
+
 RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 5000
