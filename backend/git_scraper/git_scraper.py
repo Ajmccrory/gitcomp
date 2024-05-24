@@ -3,7 +3,7 @@ from requests.exceptions import Timeout
 from bs4 import BeautifulSoup
 import logging
 from data.mongo_ops import MongoOperations
-from src.comparison import Comparison
+from helpers.comparison import Comparison
 
 class GithubScraper:
     """

@@ -1,105 +1,70 @@
-# Web Scraping Application
-This repository contains the code for a web scraping application with a React frontend, Flask backend, MongoDB database, and GitHub Actions for CI/CD. The application uses Beautiful Soup for scraping web content and integrates with the GitHub API for various functions.
+# Getting Started with Create React App
 
-# Overview
-The application is designed to scrape data from websites, process it, and display it in a user-friendly web interface. It uses React for the frontend to provide a responsive UI, Flask as the backend server to handle API requests, and MongoDB for storing scraped data. GitHub Actions are configured for continuous integration and deployment, ensuring that the codebase is automatically tested and deployed to the production environment.
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-# Features
-Web scraping with Beautiful Soup (bs4)
-React-based frontend for a dynamic user experience
-Flask backend for handling API requests and server-side logic
-MongoDB for data persistence
-GitHub Actions for automated testing and deployment
-Integration with the GitHub API for additional functionalities
-Prerequisites
-Before you begin, ensure you have met the following requirements:
+## Available Scripts
 
-Node.js and npm (https://nodejs.org/)
-Python 3 and pip (https://python.org/)
-MongoDB (https://mongodb.com/)
-A GitHub account for setting up GitHub Actions and API integration
-Installation
-To set up the application for development, follow these steps:
+In the project directory, you can run:
 
-# Clone the repository:
-```Bash
+### `npm start`
 
-Insert code
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
-Install frontend dependencies:
-```
-```Bash
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-Insert code
-cd frontend
-npm install
-Install backend dependencies:
-```
-```Bash
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
 
-Insert code
-cd ../backend
-pip install -r requirements.txt
-Set up the environment variables by creating a .env file in the backend directory with the following content:
-Env
-```
+### `npm test`
 
-# Insert code
-MONGO_URI=mongodb://localhost:27017/your-db-name
-GITHUB_TOKEN=your_github_token
-FLASK_APP=app.py
-FLASK_ENV=development
-Replace your-db-name with the name of your MongoDB database and your_github_tok<wbr>en with your personal GitHub token.
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-# Running the Application
-To run the application:
+### `npm run build`
 
-- Start the MongoDB service on your machine.
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-- Run the Flask backend server:
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-```Bash
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-Insert code
-cd backend
-flask run
-In a new terminal, start the React frontend:
-```
-```Bash
+### `npm run eject`
 
-# Insert code
-cd frontend
-npm start
-The React application will open in your default web browser at http://localhos<wbr>t:3000.
-```
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-# Testing
-### To run the automated tests for the backend, use the following command:
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-```Bash
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-# Insert code
-cd backend
-python -m unittest
-GitHub Actions
-The .github/workflo<wbr>ws directory contains the GitHub Actions workflow files. These workflows automate testing and deployment processes.
-```
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## main.yml: Runs tests on every push and pull request to the main branch.
-- deploy.yml: Deploys the application to the production server on every push to the main branch, after tests pass.
-## Contributing
-- We welcome contributions to this project. If you have suggestions or want to contribute, please follow these steps:
+## Learn More
 
-# Fork the repository.
-1. Create a new branch (git checkout -b feature/your-fea<wbr>ture).
-2. Make your changes and commit them (git commit -am 'Add some feature').
-3. Push to the branch (git push origin feature/your-fea<wbr>ture).
-4. Create a new Pull Request.
-5. License
-This project is licensed under the MIT License - see the LICENSE file for details.
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-# Contact
-If you have any questions or comments about the application, please open an issue in this repository.
+To learn React, check out the [React documentation](https://reactjs.org/).
 
-Thank you for checking out our web scraping application! We hope you find it useful for your data collection and processing needs.
+### Code Splitting
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+
+### Analyzing the Bundle Size
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+
+### Making a Progressive Web App
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+
+### Advanced Configuration
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
+### Deployment
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+
+### `npm run build` fails to minify
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

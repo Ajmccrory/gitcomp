@@ -1,8 +1,9 @@
 from pymongo import MongoClient
-import gridfs
+from pymongo.server_api import ServerApi
 from bson import ObjectId
+from config import config
+import gridfs
 
-URI = 'mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.2.3'
 
 
 class MongoOperations:
@@ -21,7 +22,8 @@ class MongoOperations:
         """
         Initializes the MongoDB connection and collections.
         """
-        self.client = MongoClient(URI)
+        self.uri = ''
+        self.client = MongoClient(self.uri, server_api=ServerApi('1'))
         self.db = self.client['git_data']
         self.collection = self.db['user_contributions']
         self.repo_collection = self.db['user_repos']

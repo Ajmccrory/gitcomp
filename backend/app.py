@@ -1,6 +1,7 @@
-import base64
 from flask import Flask, request, render_template, redirect, url_for
 from git_scraper.git_scraper import GithubScraper
+from config import config
+import base64
 import matplotlib
 import matplotlib.pyplot as plt
 import io
@@ -11,6 +12,8 @@ matplotlib.use('Agg')  # Use a non-interactive backend
 
 app = Flask(__name__)
 scraper = GithubScraper()
+app.config.from_object(config)
+mongo_uri = scraper.mongo.uri(app.config['MONGO_URI'])
 logging.basicConfig(level=logging.INFO)
 
 # Custom filter for base64 encoding
