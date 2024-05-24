@@ -1,70 +1,59 @@
-# Getting Started with Create React App
+## Overview
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The Gitcomp Frontend is built using React and Context API, providing a user-friendly interface for interacting with the Gitcomp Backend APIs. It allows users to perform various actions such as scraping GitHub user data, checking data, clearing user data, comparing contributions, repositories, and generating user activity graphs.
 
-## Available Scripts
+## Functionality
 
-In the project directory, you can run:
+### 1. User Interface
+- **Scrape Data:** Input GitHub username(s) and initiate data scraping.
+- **Check Data:** Verify if a user's data exists in the system.
+- **Clear Data:** Remove a user's data from the database.
+- **Compare Contributions:** Compare contributions of multiple users.
+- **Compare Repositories:** Visualize similarities between repositories.
+- **Generate Graph:** Create user activity graphs for analysis.
 
-### `npm start`
+### 2. Context API Integration
+- **Global State Management:** Manage application state using React Context API.
+- **Shared Data:** Share data and functions across components efficiently.
+- **Dynamic Updates:** Update UI components dynamically based on state changes.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Setup Instructions
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1. Clone the Gitcomp Frontend repository:
+   ```bash
+   git clone https://github.com/Ajmccrory/gitcomp-frontend.git
+   cd gitcomp-frontend
+   ```
+2. Install dependencies using npm:
+    ```bash
+    npm install
+    ```
+3. Configure Enviornment Variables
+* Ensure the backend API endpoitn is correctly set in `src/config.js`
+* For more on setup navigate to [setup for developers](../README.md#setup-instructions-for-developers-setup-instructions)
+4. Run the Application Locally
+    ```bash
+    npm start
+    ```
+5. Access the application
+* Open your browser and navigate to `http://localhost:5000` to access the frontend of gitcomp.
 
-### `npm test`
+## Development Information
+### Technologies Used
+* React: JavaScript library for building UI's.
+* Context API: React's state management system for global state.
+* Axios: HTTP client for making API requests to the backend.
+* Chart.js: Library used for creating interactive charts and graphs.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Folder Structure
+* src/components: React components for different functionalities.
+* src/context: Context providers and consumers for state management.
+* src/services: Service files for API calls and data handling.
+* src/config.js: Configuration file for API endpoints and other constants.
 
-### `npm run build`
+## Contribute
+Contributions to the frontend are more than welcome, If you'd like to commit follow the steps in the [contribute](../README.md#contribute-contribute)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Return to main
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+For setup, and more information, return to [main folder README](../README.md)
