@@ -5,6 +5,7 @@ import logging
 from data.mongo_ops import MongoOperations
 from helpers.comparison import Comparison
 
+
 class GithubScraper:
     """
     Class for scraping GitHub data and performing comparisons.
@@ -62,9 +63,9 @@ class GithubScraper:
                 if attempt == retries - 1:
                     raise
 
-    def compare_users_contributions(self, usernames):
+    def get_users_contributions(self, usernames):
         """
-        Compare contributions of multiple users.
+        Use compare helper to compare the contribution amount of two users.
 
         Args:
             usernames (list): List of GitHub usernames.
@@ -128,6 +129,73 @@ class GithubScraper:
                 if attempt == retries - 1:
                     raise
 
+    def get_similarity(self, usernames):
+        """
+        Compares the repositories of multiple users from their stored data in their mongo collection.
+
+        Args:
+            usernames (list): list of usernames whos repsitory to compare.
+
+        Returns:
+            dict: A dictionary where keys are repo names and vals are lists of usernames that have that repo
+        """
+        if len(usernames) < 2 or len(usernames) > 4:
+            raise ValueError("You must compare at least 2 and at most 4 users.")
+        
+        user_repos = {}
+        for user in usernames:
+            user_data = self.mongo.repo_collection.find({'username': user})
+            if user_data is None:
+                raise ValueError(f"No data found for user '{user}'.")
+            user_repos[user] = [repo['repository'] for repo in user_data]
+
+        # Create a dict to store the comparison results
+        repo_comparison = {}
+        for username, repos in user_repos.items():
+            for repo in repos:
+                if repo not in repo_comparison:
+                    repo_comparison[repo] = []
+                repo_comparison[repo].append(username)
+
+        # Filter to only include repos that have contributions from more than one user.
+        repo_comparison = {repo: users for repo, users in repo_comparison.items() if len(users) > 1}
+
+        return repo_comparison
+    
+    def get_user_data(self, username):
+        """
+        Compile user data into a dict with one key that is user and one value that is 
+        that users important information.
+        Args:
+            username (str): name for the user 
+        """
+        if not username:
+            raise ValueError("Username cannot be empty.")
+        user_data = self.mongo.find_one({'username': username})
+        if user_data:
+            self.logger.info(f'User data for {username} found.')
+        else:
+            self.logger.info(f'data for {username} not found')
+            try:
+                self.scrape_user_data(username)
+                self.get_repos(username)
+                user_data = [self.mongo.find_one({'username': username})]
+            except Exception as e:
+                self.logger.error(f'Error occured while scraping {username} data: {e}')
+                raise
+
+        if not user_data:
+            raise ValueError(f'Failed to retrieve data for user {username}')
+        
+        repos_data = list(self.mongo.repo_collection.find({'username': username}))
+        repositories = [repo['repository'] for repo in repos_data]
+
+        return {
+            'username': username,
+            'contributions_last_year': user_data.get('user_contributions', 0),
+            'repositories': repositories
+        }
+        
     def close(self):
         """
         Close MongoDB connection.

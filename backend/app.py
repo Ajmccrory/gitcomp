@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, session, flash
 from git_scraper.git_scraper import GithubScraper
 from config import config
 import base64
@@ -9,14 +9,13 @@ import logging
 import uuid
 
 matplotlib.use('Agg')  # Use a non-interactive backend
-
 app = Flask(__name__)
 scraper = GithubScraper()
 app.config.from_object(config)
 mongo_uri = scraper.mongo.uri(app.config['MONGO_URI'])
 logging.basicConfig(level=logging.INFO)
 
-# Custom filter for base64 encoding
+
 def compile_data(scraped_data, users):
     if len(scraped_data) < 2:
         raise ValueError("Insufficient data for comparison.")
@@ -43,9 +42,36 @@ def compile_data(scraped_data, users):
 
     file_id = scraper.mongo.save_image(img_bytes, f'bar_char_{uuid.uuid4().hex}.png')
     return file_id
+
+def create_graph(data, user_data):
+    username = user_data['username']
+    user_contributions = user_data['user_contributions']
+    num_repos = len(user_data['repositories'])
+
+    fig, ax = plt.subplots()
+
+    bars = ax.bar(['Contributions', 'Repositories'], [user_contributions, num_repos], color=['blue', 'green'])
+
+    ax.set_title(f'Github User Data for {username}')
+    ax.set_ylabel('Count')
+
+    for bar in bars:
+        yval = bar.get_height()
+        ax.text(bar.get_x() + bar.get_width() / 2, yval, int(yval), ha='center', va='bottom')
+
+    img_bytes = io.BytesIO()
+    plt.savefig(img_bytes, format='png')
+    img_bytes.seek(0)
+
+    img_base64 = base64.b64encode(img_bytes.read()).decode('utf-8')
+
+    return img_base64
+
+
 # Custom filter for base64 encoding
 def b64encode_filter(data):
     return base64.b64encode(data).decode('utf-8')
+
 
 # Register the custom filter with Flask
 app.jinja_env.filters['b64encode'] = b64encode_filter
@@ -75,7 +101,7 @@ def compare():
             scraper.scrape_user_data(user)
 
         try:
-            contributions = scraper.compare_users_contributions(valid_usernames)
+            contributions = scraper.get_users_contributions(valid_usernames)
             plot_id = compile_data(contributions, valid_usernames)
             return redirect(url_for('display_comparison', plot_id=plot_id))
         except ValueError as e:
@@ -95,6 +121,7 @@ def display_comparison():
         return render_template('compare_users.html', plot_data=image_data)
     except Exception as e:
         return render_template('error.html', error=f"An error occurred while retrieving the image: {str(e)}")
+    
 @app.route('/scrape', methods=['GET', 'POST'])
 def scrape_user_data():
     """
@@ -174,6 +201,78 @@ def clear_collection_success():
     """
     username = request.args.get('username')
     return render_template('clear_collection_success.html', message=username)
+
+@app.route('/similarity', methods=['GET', 'POST'])
+def check_repo_similarity():
+    """
+    Runs a check to compare the similarity of multiple users
+    accounts to show contributions in matching repositories.
+    """
+    if request.method == 'POST':
+        usernames = [request.form.get(f'user{i}') for i in range(1, 5)]
+        valid_usernames = [username for username in usernames if username]
+
+        if len(valid_usernames) < 2 or len(valid_usernames) > 4:
+            return render_template('error.html', error='Please provide 2 to 4 usernames.')
+        
+        try:
+            similarities = scraper.get_similarity(valid_usernames)
+            return redirect(url_for('display_repo_similarity', similarities=similarities))
+        except Exception as e:
+            return render_template('error.html', error=f'An error occurred: {str(e)}')
+        
+    return render_template('similarity.html')
+
+@app.route('display_similarity', methods=['GET'])
+def display_repo_similarity():
+    """
+    Displays the similarity between the repos of the compared users.
+    """
+    similarities = request.args.get('similarities')
+    #  Similarities - A dictionary where keys are repo names and vals are lists of usernames that have that repo
+    if not similarities:
+        return render_template('error.html', error='No similarity data provided')
+    return render_template('display_similarity.html', similarities=similarities)
+
+
+@app.route('/graph', methods=['GET', 'POST'])
+def compile_graph():
+    """
+    Compiles user information into a graph that is saved with the user id's
+    within a list in a MongoDB collection.
+    """
+    if request.method == 'POST':
+        usernames = [request.form.get(f'user{i}') for i in range(1, 5)]
+        valid_usernames = [username for username in usernames if username]
+
+        if len(valid_usernames) < 2 or len(valid_usernames) > 4:
+            return render_template('error.html', error="Please provide 2 to 4 usernames.")
+
+        try:
+            user_data = [scraper.get_user_data(user) for user in valid_usernames]
+            graph = create_graph(user_data)
+            graph_id = scraper.mongo.save_image(graph, f'user_graph_{uuid.uuid4().hex}.png')
+            return redirect(url_for('display_graph', graph_id=graph_id))
+        except Exception as e:
+            return render_template('error.html', error=f"An error occurred: {str(e)}")
+
+    return render_template('compile_graph.html')
+
+
+@app.route('/display_graph', methods=['GET'])
+def display_graph():
+    """
+    Display the graph of compiled user data for a single user.
+    """
+    graph_id = request.args.get('graph_id')
+    if  graph_id is None:
+        return render_template('error.html', error="No plot ID provided.")
+    try:
+        image_data = scraper.mongo.get_image(graph_id)
+        return render_template('compare_users.html', graph_id=image_data)
+    except Exception as e:
+        return render_template('error.html', error=f"An error occurred while retrieving the image: {str(e)}")
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

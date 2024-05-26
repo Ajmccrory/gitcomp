@@ -1,3 +1,5 @@
+
+
 class Comparison:
     """
     Class for comparing user contributions data.
@@ -23,12 +25,13 @@ class Comparison:
         self.usernames = usernames
         self.user_data = user_data
 
+
     def compare_users(self):
         """
         Compare contributions of multiple users.
 
         Returns:
-            list: A list containing contributions of all users.
+            list*: A list containing contributions of all users.
         Raises:
             ValueError: If contributions data is not found for any user.
         """
@@ -42,3 +45,5 @@ class Comparison:
             contributions.append(int(data['contributions_last_year']))
 
         return contributions
+
+

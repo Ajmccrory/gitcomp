@@ -12,7 +12,7 @@ The current version in development attempts to resolve front-end issues by imple
 | Version | Supported          |
 | ------- | ------------------ |
 | 1.0.0  | :white_check_mark: |
-| 1.0.1  | :x:                |
+| 1.0.1  | :white_check_mark:                |
 | 1.0.2  | :x: |
 | < 1.0.3  | :x:                |
 

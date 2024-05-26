@@ -30,7 +30,13 @@ The Gitcomp Backend is a Flask-based application designed to handle data scrapin
 - **Description:** Compares contributions and repositories of multiple users.
 - **Parameters:** List of GitHub usernames as input.
 
-### 5. Graph Generation
+### 5. Similarity Comparison
+- **Route** `/similarity`
+- **Method:**GET, POST
+- **Description:** Compares the similarity of multiple users repos to check for contributions.
+- **Parameters:** List of GitHub usernames as input.
+
+### 6. Graph Generation
 - **Route:** `/graph`
 - **Method:** GET, POST
 - **Description:** Generates a user activity graph based on GitHub username.

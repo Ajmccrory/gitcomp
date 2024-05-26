@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="summary text-center mb-4">
+    <h2>Explore Gitcomp.py Features</h2>
+    <p>Gitcomp.py offers a range of functionalities to streamline your GitHub data management:</p>
+</div>
+
+<div class="row">
+    <div class="col-lg-3 mb-4">
+        <div class="card bg-primary text-white shadow">
+            <div class="card-body">
+                <i class="fas fa-download"></i> Scrape User Data
+                <p class="mt-2">Scrape repositories of a GitHub user.</p>
+                <a href="/scrape" class="btn btn-light">Scrape Now</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 mb-4">
+        <div class="card bg-primary text-white shadow">
+            <div class="card-body">
+                <i class="fas fa-search"></i> Check Existing User
+                <p class="mt-2">Check if a user exists in the database.</p>
+                <a href="/existing" class="btn btn-light">Check Now</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 mb-4">
+        <div class="card bg-primary text-white shadow">
+            <div class="card-body">
+                <i class="fas fa-trash-alt"></i> Clear Mongo Collection
+                <p class="mt-2">Clear MongoDB collection for a specific user.</p>
+                <a href="/clear" class="btn btn-light">Clear Collection</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 mb-4">
+        <div class="card bg-primary text-white shadow">
+            <div class="card-body">
+                <i class="fas fa-users"></i> Compare Users
+                <p class="mt-2">Compare the contributions of multiple users.</p>
+                <a href="/compare" class="btn btn-light">Compare</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
