@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for, session, flash
 from git_scraper.git_scraper import GithubScraper
-from config import config
+from config.config import Config
 import base64
 import matplotlib
 import matplotlib.pyplot as plt
@@ -10,9 +10,9 @@ import uuid
 
 matplotlib.use('Agg')  # Use a non-interactive backend
 app = Flask(__name__)
-scraper = GithubScraper()
-app.config.from_object(config)
-mongo_uri = scraper.mongo.uri(app.config['MONGO_URI'])
+app.config.from_object(Config)
+mongo_uri = app.config['MONGO_URI']
+scraper = GithubScraper(mongo_uri)
 logging.basicConfig(level=logging.INFO)
 
 
@@ -223,7 +223,7 @@ def check_repo_similarity():
         
     return render_template('similarity.html')
 
-@app.route('display_similarity', methods=['GET'])
+@app.route('/display_similarity', methods=['GET'])
 def display_repo_similarity():
     """
     Displays the similarity between the repos of the compared users.

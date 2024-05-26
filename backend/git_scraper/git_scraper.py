@@ -15,11 +15,11 @@ class GithubScraper:
         logger (Logger): Logger instance for logging messages.
     """
 
-    def __init__(self):
+    def __init__(self, uri):
         """
         Initialize GithubScraper class with MongoDB operations and logger.
         """
-        self.mongo = MongoOperations()
+        self.mongo = MongoOperations(uri)
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 

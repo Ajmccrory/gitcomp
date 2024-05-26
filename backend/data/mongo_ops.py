@@ -1,5 +1,6 @@
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+import pymongo
 from bson import ObjectId
 from config import config
 import gridfs
@@ -18,11 +19,11 @@ class MongoOperations:
         fs (GridFS): The GridFS instance for handling file storage.
     """
 
-    def __init__(self):
+    def __init__(self, uri):
         """
         Initializes the MongoDB connection and collections.
         """
-        self.uri = ''
+        self.uri = uri
         self.client = MongoClient(self.uri, server_api=ServerApi('1'))
         self.db = self.client['git_data']
         self.collection = self.db['user_contributions']
