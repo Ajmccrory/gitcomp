@@ -1,4 +1,5 @@
-from flask import Flask, request, render_template, redirect, url_for, session, flash
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 from git_scraper.git_scraper import GithubScraper
 from config.config import Config
 import base64
@@ -10,6 +11,7 @@ import uuid
 
 matplotlib.use('Agg')  # Use a non-interactive backend
 app = Flask(__name__)
+CORS(app)
 app.config.from_object(Config)
 mongo_uri = app.config['MONGO_URI']
 scraper = GithubScraper(mongo_uri)
@@ -77,39 +79,29 @@ def b64encode_filter(data):
 app.jinja_env.filters['b64encode'] = b64encode_filter
 
 
-@app.route('/')
-def homepage():
-    """
-    Renders the homepage.
-    """
-    return render_template('index.html')
-
 @app.route('/compare', methods=['GET', 'POST'])
 def compare():
     """
     Handles the comparison of user contributions.
     If the request method is POST, it scrapes data for the provided usernames and generates a comparison chart.
     """
-    if request.method == 'POST':
-        usernames = [request.form.get(f'user{i}') for i in range(1, 5)]
-        valid_usernames = [username for username in usernames if username]
-
-        if len(valid_usernames) < 2 or len(valid_usernames) > 4:
-            return render_template('error.html', error="Please provide 2 to 4 usernames.")
-
-        for user in valid_usernames:
+    data = request.json
+    usernames = data.get('usernames')
+    if not usernames or len(usernames) < 2 or len(usernames) > 4:
+        return jsonify({"error": "Please provide 2 to 4 usernames. "}), 400
+    
+    try:
+        for user in usernames:
             scraper.scrape_user_data(user)
 
-        try:
-            contributions = scraper.get_users_contributions(valid_usernames)
-            plot_id = compile_data(contributions, valid_usernames)
-            return redirect(url_for('display_comparison', plot_id=plot_id))
-        except ValueError as e:
-            return render_template('error.html', error=str(e))
-        except Exception as e:
-            error_message = f"An error occurred during comparison. {str(e)}"
-            return render_template('error.html', error=error_message)
-    return render_template('compare_page.html')
+        contributions = scraper.get_users_contributions(usernames)
+        plot_id = compile_data(contributions, usernames)
+        return jsonify({"plot_id": plot_id}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        error_message = f'An error occurred during comparison. {str(e)}'
+        return jsonify({"error": error_message}), 500
 
 @app.route('/display_comparison', methods=['GET'])
 def display_comparison():

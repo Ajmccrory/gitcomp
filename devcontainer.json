@@ -8,7 +8,7 @@
         "ms-azuretools.vscode-docker"
     ],
     "settings": {
-        "python.pythonPath": "/gitcomp/venv/bin/python",
+        "python.pythonPath": "/gitcomp/backend/venv/bin/python",
         "python.linting.enabled": true,
         "python.linting.pylintEnabled": true,
         "python.linting.pylintArgs": [
