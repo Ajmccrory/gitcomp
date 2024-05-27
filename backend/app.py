@@ -1,5 +1,7 @@
-from flask import Flask, request, jsonify, redirect, url_for
+# RestfulAPI
+from flask import Flask, request, jsonify, redirect, url_for, send_from_directory
 from flask_cors import CORS
+from flask_swagger_ui import get_swaggerui_blueprint
 from git_scraper.git_scraper import GithubScraper
 from config.config import Config
 import base64
@@ -8,6 +10,7 @@ import matplotlib.pyplot as plt
 import io
 import logging
 import uuid
+
 
 matplotlib.use('Agg')  # Use a non-interactive backend
 app = Flask(__name__)
@@ -230,7 +233,6 @@ def compile_graph():
     except Exception as e:
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
-
 @app.route('/display_graph', methods=['GET'])
 def display_graph():
     """
@@ -245,6 +247,17 @@ def display_graph():
     except Exception as e:
         return jsonify({"error": f"An error occurred in displaying the graph: {str(e)}"}), 500
 
+SWAGGER_URL = '/swagger'
+API_URL = '/static/swagger.yaml'
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': "Gitcomp"
+    }
+)
+
+app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
