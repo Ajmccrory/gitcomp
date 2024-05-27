@@ -1,12 +1,11 @@
-// App.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import Scrape from './components/Scrape';
-import Existing from './components/Existing';
-import Clear from './components/Clear';
-import Compare from './components/Compare';
-import Similarity from './components/Similarity';
-import Graph from './components/Graph';
+import ScrapeUserData from './components/ScrapeUserData';
+import CheckUserExists from './components/CheckUserExists';
+import ClearMongoCollection from './components/ClearMongoCollection';
+import CompareRepoSimilarity from './components/CompareRepoSimilarity';
+import CheckRepoSimilarity from './components/CheckRepoSimilarity';
+import DisplayGraph from './components/DisplayGraph';
 
 function App() {
   return (
@@ -20,46 +19,46 @@ function App() {
           <Card 
             title="Scrape User Data" 
             description="Scrape repositories of a GitHub user." 
-            link="/scrape" 
+            link="/api/scrape"  // Update the link to match your Flask endpoint
             icon="fas fa-download"
           />
           <Card 
             title="Check Existing User" 
             description="Check if a user exists in the database." 
-            link="/existing" 
+            link="/api/existing"  // Update the link to match your Flask endpoint
             icon="fas fa-search"
           />
           <Card 
             title="Clear Mongo Collection" 
             description="Clear MongoDB collection for a specific user." 
-            link="/clear" 
+            link="/api/clear"  // Update the link to match your Flask endpoint
             icon="fas fa-trash-alt"
           />
           <Card 
             title="Compare Users" 
             description="Compare the contributions of multiple users." 
-            link="/compare" 
+            link="/api/compare"  // Update the link to match your Flask endpoint
             icon="fas fa-users"
           />
           <Card 
             title="Repo Similarity" 
             description="Check to see whether 2-4 users have repos in common." 
-            link="/similarity" 
+            link="/api/similarity"  // Update the link to match your Flask endpoint
             icon="fas fa-users"
           />
           <Card 
             title="User Graph" 
             description="Create a graph of user repositories and contributions." 
-            link="/graph" 
+            link="/api/graph"  // Update the link to match your Flask endpoint
             icon="fas fa-users"
           />
         </div>
-        <Route path="/scrape" component={Scrape} />
-        <Route path="/existing" component={Existing} />
-        <Route path="/clear" component={Clear} />
-        <Route path="/compare" component={Compare} />
-        <Route path="/similarity" component={Similarity} />
-        <Route path="/graph" component={Graph} />
+        <Route path="/api/scrape" component={ScrapeUserData} />
+        <Route path="/api/existing" component={CheckUserExists} />
+        <Route path="/api/clear" component={ClearMongoCollection} />
+        <Route path="/api/compare" component={CompareRepoSimilarity} />
+        <Route path="/api/similarity" component={CheckRepoSimilarity} />
+        <Route path="/api/graph" component={DisplayGraph} />
       </div>
     </Router>
   );

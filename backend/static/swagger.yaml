@@ -1,0 +1,436 @@
+openapi: 3.0.0
+info:
+  title: Gitcomp API
+  description: API for scraping and comparing GitHub user data
+  version: 1.0.3
+servers:
+  - url: http://localhost:5000/api
+paths:
+  /compare:
+    post:
+      summary: Compare user contributions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                usernames:
+                  type: array
+                  items:
+                    type: string
+                  minItems: 2
+                  maxItems: 4
+      responses:
+        '200':
+          description: Successful comparison
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  plot_id:
+                    type: string
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /display_comparison:
+    get:
+      summary: Display comparison chart
+      parameters:
+        - name: plot_id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful retrieval
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  plot_data:
+                    type: string
+        '400':
+          description: Plot ID not provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /scrape:
+    post:
+      summary: Scrape user data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        '200':
+          description: Data scraped successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  repos:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        url:
+                          type: string
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /scraped_user:
+    post:
+      summary: Show scraped data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        '200':
+          description: Scraped data retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  repos:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        url:
+                          type: string
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /existing:
+    post:
+      summary: Check if user exists in the database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        '200':
+          description: User data retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_data:
+                    type: object
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /clear:
+    post:
+      summary: Clear MongoDB collection for the given username
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        '200':
+          description: Collection cleared successfully
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /similarity:
+    post:
+      summary: Check repository similarity among users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                usernames:
+                  type: array
+                  items:
+                    type: string
+                  minItems: 2
+                  maxItems: 4
+      responses:
+        '200':
+          description: Similarity data retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  similarities:
+                    type: object
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /display_similarity:
+    get:
+      summary: Display repository similarity
+      parameters:
+        - name: similarities
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Similarity data retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  similarities:
+                    type: object
+        '400':
+          description: Similarity info not provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /graph:
+    post:
+      summary: Compile user information into a graph
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                usernames:
+                  type: array
+                  items:
+                    type: string
+                  minItems: 2
+                  maxItems: 4
+      responses:
+        '200':
+          description: Graph compiled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  graph_id:
+                    type: string
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /display_graph:
+    get:
+      summary: Display compiled graph
+      parameters:
+        - name: graph_id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Graph retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  graph_id:
+                    type: string
+        '400':
+          description: Graph ID not provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+components:
+  schemas:
+    Username:
+      type: string
+    Usernames:
+      type: array
+      items:
+        type: string
+      minItems: 2
+      maxItems: 4
+    PlotID:
+      type: string
+    GraphID:
+      type: string
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string

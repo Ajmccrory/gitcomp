@@ -82,7 +82,7 @@ def b64encode_filter(data):
 app.jinja_env.filters['b64encode'] = b64encode_filter
 
 
-@app.route('/compare', methods=['POST'])
+@app.route('/api/compare', methods=['POST'])
 def compare():
     """
     Handles the comparison of user contributions.
@@ -106,7 +106,7 @@ def compare():
         error_message = f'An error occurred during comparison. {str(e)}'
         return jsonify({"error": error_message}), 500
 
-@app.route('/display_comparison', methods=['GET'])
+@app.route('/api/display_comparison', methods=['GET'])
 def display_comparison():
     plot_id = request.args.get('plot_id')
     if not plot_id:
@@ -117,7 +117,7 @@ def display_comparison():
     except Exception as e:
         return jsonify({"error": f"An error occured while retrieving the image: {str(e)}"}), 500
     
-@app.route('/scrape', methods=['POST'])
+@app.route('/api/scrape', methods=['POST'])
 def scrape_user_data():
     """
     Scrapes user data from GitHub.
@@ -135,7 +135,7 @@ def scrape_user_data():
         logging.error(f"Error occurred: {str(e)}")
         return jsonify({"error": f"An error occurred: {str(e)}"}, 500)
 
-@app.route('/scraped_user', methods=['POST'])
+@app.route('/api/scraped_user', methods=['POST'])
 def show_scraped_data():
     """
     Displays the scraped data for the given username.
@@ -151,7 +151,7 @@ def show_scraped_data():
     except Exception as e:
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
-@app.route('/existing', methods=['POST'])
+@app.route('/api/existing', methods=['POST'])
 def check_user_exists():
     """
     Checks if the user exists in the database.
@@ -168,7 +168,7 @@ def check_user_exists():
     else:
         return jsonify({"error": "User not found in the database."})
 
-@app.route('/clear', methods=['POST'])
+@app.route('/api/clear', methods=['POST'])
 def clear_mongo_collection():
     """
     Clears the MongoDB collection for the given username.
@@ -186,7 +186,7 @@ def clear_mongo_collection():
         logging.error(f"An error occurred: {str(e)}")
         return jsonify("An error occurred while clearing the collection"), 500
 
-@app.route('/similarity', methods=['POST'])
+@app.route('/api/similarity', methods=['POST'])
 def check_repo_similarity():
     """
     Runs a check to compare the similarity of multiple users
@@ -203,7 +203,7 @@ def check_repo_similarity():
     except Exception as e:
         return jsonify({"error": f"An error occurred {str(e)}"}), 500
 
-@app.route('/display_similarity', methods=['GET'])
+@app.route('/api/display_similarity', methods=['GET'])
 def display_repo_similarity():
     """
     Displays the similarity between the repos of the compared users.
@@ -214,7 +214,7 @@ def display_repo_similarity():
         return jsonify({"error": "similarities info not provided."}), 400
     return jsonify({"similarities": similarities}), 200
 
-@app.route('/graph', methods=['POST'])
+@app.route('/api/graph', methods=['POST'])
 def compile_graph():
     """
     Compiles user information into a graph that is saved with the user id's
@@ -233,7 +233,7 @@ def compile_graph():
     except Exception as e:
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
-@app.route('/display_graph', methods=['GET'])
+@app.route('/api/display_graph', methods=['GET'])
 def display_graph():
     """
     Display the graph of compiled user data for a single user.
@@ -247,7 +247,7 @@ def display_graph():
     except Exception as e:
         return jsonify({"error": f"An error occurred in displaying the graph: {str(e)}"}), 500
 
-SWAGGER_URL = '/swagger'
+SWAGGER_URL = '/api/swagger'
 API_URL = '/static/swagger.yaml'
 swaggerui_blueprint = get_swaggerui_blueprint(
     SWAGGER_URL,
@@ -260,4 +260,4 @@ swaggerui_blueprint = get_swaggerui_blueprint(
 app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=3000)
