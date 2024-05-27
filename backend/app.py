@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, redirect, url_for
 from flask_cors import CORS
 from git_scraper.git_scraper import GithubScraper
 from config.config import Config
@@ -79,7 +79,7 @@ def b64encode_filter(data):
 app.jinja_env.filters['b64encode'] = b64encode_filter
 
 
-@app.route('/compare', methods=['GET', 'POST'])
+@app.route('/compare', methods=['POST'])
 def compare():
     """
     Handles the comparison of user contributions.
@@ -106,114 +106,99 @@ def compare():
 @app.route('/display_comparison', methods=['GET'])
 def display_comparison():
     plot_id = request.args.get('plot_id')
-    if plot_id is None:
-        return render_template('error.html', error="No plot ID provided.")
+    if not plot_id:
+        return jsonify({"error": "No plot ID provided"}), 400
     try:
         image_data = scraper.mongo.get_image(plot_id)
-        return render_template('compare_users.html', plot_data=image_data)
+        return jsonify({"plot_data": image_data}), 200
     except Exception as e:
-        return render_template('error.html', error=f"An error occurred while retrieving the image: {str(e)}")
+        return jsonify({"error": f"An error occured while retrieving the image: {str(e)}"}), 500
     
-@app.route('/scrape', methods=['GET', 'POST'])
+@app.route('/scrape', methods=['POST'])
 def scrape_user_data():
     """
     Scrapes user data from GitHub.
     If the request method is POST, it scrapes data for the provided username.
     """
-    if request.method == 'POST':
-        username = request.form.get('username')
-        if not username:
-            return render_template('error.html', error="Please provide a username.")
+    data = request.json
+    username = data.get('username')
+    if not username:
+        return jsonify({"error": "Please provide a username."}), 400
+    
+    try:
+        scraper.scrape_user_data(username)
+        return redirect(url_for('show_scraped_data', data=data))
+    except Exception as e:
+        logging.error(f"Error occurred: {str(e)}")
+        return jsonify({"error": f"An error occurred: {str(e)}"}, 500)
 
-        try:
-            scraper.scrape_user_data(username)
-            return redirect(url_for('show_scraped_data', username=username))
-        except Exception as e:
-            logging.error(f"Error occurred: {str(e)}")
-            return render_template('error.html', error=f"An error occurred: {str(e)}")
-
-    return render_template('scraping.html')
-
-@app.route('/scraped_user', methods=['GET', 'POST'])
+@app.route('/scraped_user', methods=['POST'])
 def show_scraped_data():
     """
     Displays the scraped data for the given username.
     """
-    if request.method == 'POST':
-        username = request.form.get('username')
-        if not username:
-            return render_template('error.html', error="Please provide a username.")
+    data = request.json
+    username = data.get('username')
+    if not username:
+        return jsonify({"error": "username not provided"}), 400
+    
+    try:
         repos = scraper.get_repos(username)
-        return render_template('scraped.html', username=username, repos=repos)
-    return render_template('scraped.html')
+        return jsonify({"username": username, "repos": repos}), 200
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
-@app.route('/existing', methods=['GET', 'POST'])
+@app.route('/existing', methods=['POST'])
 def check_user_exists():
     """
     Checks if the user exists in the database.
     If the request method is POST, it checks for the provided username.
     """
-    if request.method == 'POST':
-        username = request.form.get('existing')
-        if not username:
-            return render_template('error.html', error="Please provide a username.")
+    data = request.json
+    username = data.get('username')
+    if not username:
+        return jsonify({"error": "Please provide a username"}), 400
+    
+    user_data = scraper.mongo.find_one({'username': username})
+    if user_data:
+        return jsonify({"user_data": user_data}), 200
+    else:
+        return jsonify({"error": "User not found in the database."})
 
-        user_data = scraper.mongo.find_one({'username': username})
-        if user_data:
-            return render_template('existing_user.html', user_data=user_data)
-        else:
-            return render_template('error.html', error="User not found in the database.")
-
-    return render_template('existing_user.html')
-
-@app.route('/clear', methods=['GET', 'POST'])
+@app.route('/clear', methods=['POST'])
 def clear_mongo_collection():
     """
     Clears the MongoDB collection for the given username.
     If the request method is POST, it clears data for the provided username.
     """
-    if request.method == 'POST':
-        username = request.form.get('username')
-        if not username:
-            return render_template('error.html', error="Please provide a username.")
+    data = request.json
+    username = data.get('username')
+    if not username:
+        return jsonify({"error": "Please provide a username."}), 400
+    
+    try:
+        scraper.mongo.clear_collection(username)
+        return jsonify("Collection cleared successsfully."), 200
+    except Exception as e:
+        logging.error(f"An error occurred: {str(e)}")
+        return jsonify("An error occurred while clearing the collection"), 500
 
-        try:
-            scraper.mongo.clear_collection(username)
-            return redirect(url_for('clear_collection_success', username=username))
-        except Exception as e:
-            logging.error(f"Error occurred: {str(e)}")
-            return render_template('error.html', error="An error occurred while clearing the collection.")
-
-    return render_template('clear_collection.html')
-
-@app.route('/clear_collection_success', methods=['GET'])
-def clear_collection_success():
-    """
-    Displays the success message after clearing the collection.
-    """
-    username = request.args.get('username')
-    return render_template('clear_collection_success.html', message=username)
-
-@app.route('/similarity', methods=['GET', 'POST'])
+@app.route('/similarity', methods=['POST'])
 def check_repo_similarity():
     """
     Runs a check to compare the similarity of multiple users
     accounts to show contributions in matching repositories.
     """
-    if request.method == 'POST':
-        usernames = [request.form.get(f'user{i}') for i in range(1, 5)]
-        valid_usernames = [username for username in usernames if username]
-
-        if len(valid_usernames) < 2 or len(valid_usernames) > 4:
-            return render_template('error.html', error='Please provide 2 to 4 usernames.')
-        
-        try:
-            similarities = scraper.get_similarity(valid_usernames)
-            return redirect(url_for('display_repo_similarity', similarities=similarities))
-        except Exception as e:
-            return render_template('error.html', error=f'An error occurred: {str(e)}')
-        
-    return render_template('similarity.html')
+    data = request.json
+    usernames = data.get('usernames')
+    if not usernames or len(usernames) < 2 or len(usernames) > 4:
+        return jsonify({"error": "Please provide anywhere from 2 to 4 usernames."}), 400
+    
+    try:
+        similarities = scraper.get_similarity(usernames)
+        return jsonify({"similarities": similarities}), 200
+    except Exception as e:
+        return jsonify({"error": f"An error occurred {str(e)}"}), 500
 
 @app.route('/display_similarity', methods=['GET'])
 def display_repo_similarity():
@@ -223,32 +208,27 @@ def display_repo_similarity():
     similarities = request.args.get('similarities')
     #  Similarities - A dictionary where keys are repo names and vals are lists of usernames that have that repo
     if not similarities:
-        return render_template('error.html', error='No similarity data provided')
-    return render_template('display_similarity.html', similarities=similarities)
+        return jsonify({"error": "similarities info not provided."}), 400
+    return jsonify({"similarities": similarities}), 200
 
-
-@app.route('/graph', methods=['GET', 'POST'])
+@app.route('/graph', methods=['POST'])
 def compile_graph():
     """
     Compiles user information into a graph that is saved with the user id's
     within a list in a MongoDB collection.
     """
-    if request.method == 'POST':
-        usernames = [request.form.get(f'user{i}') for i in range(1, 5)]
-        valid_usernames = [username for username in usernames if username]
-
-        if len(valid_usernames) < 2 or len(valid_usernames) > 4:
-            return render_template('error.html', error="Please provide 2 to 4 usernames.")
-
-        try:
-            user_data = [scraper.get_user_data(user) for user in valid_usernames]
-            graph = create_graph(user_data)
-            graph_id = scraper.mongo.save_image(graph, f'user_graph_{uuid.uuid4().hex}.png')
-            return redirect(url_for('display_graph', graph_id=graph_id))
-        except Exception as e:
-            return render_template('error.html', error=f"An error occurred: {str(e)}")
-
-    return render_template('compile_graph.html')
+    data = request.json
+    usernames = data.get('usernames')
+    if not usernames or len(usernames) < 2 or len(usernames) > 4:
+        return jsonify({"error": "Please provide 2 to 4 usernames."}), 400
+    
+    try:
+        user_data = [scraper.get_user_data(user) for user in usernames]
+        graph = create_graph(user_data)
+        graph_id = scraper.mongo.save_image(graph, f'user_graph_{uuid.uuid4().hex}.png')
+        return jsonify({"graph_id": graph_id}), 200
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 
 @app.route('/display_graph', methods=['GET'])
@@ -257,13 +237,13 @@ def display_graph():
     Display the graph of compiled user data for a single user.
     """
     graph_id = request.args.get('graph_id')
-    if  graph_id is None:
-        return render_template('error.html', error="No plot ID provided.")
+    if not graph_id:
+        return jsonify({"error": 'graph id not provided.'}), 400
     try:
         image_data = scraper.mongo.get_image(graph_id)
-        return render_template('compare_users.html', graph_id=image_data)
+        return jsonify({"graph_id": image_data}), 200
     except Exception as e:
-        return render_template('error.html', error=f"An error occurred while retrieving the image: {str(e)}")
+        return jsonify({"error": f"An error occurred in displaying the graph: {str(e)}"}), 500
 
 
 if __name__ == '__main__':
